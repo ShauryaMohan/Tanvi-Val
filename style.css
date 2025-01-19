@@ -39,18 +39,18 @@ body {
 }
 
 .question {
-    font-size: 2rem;
+    font-size: 36px;
     margin-bottom: 20px;
 }
 
 .yes-button, .no-button {
-    padding: 0.8rem 1.2rem;
+    padding: 12px 25px;
     margin: 0 10px;
     border: none;
     border-radius: 5px;
     background-color: #4CAF50;
     color: white;
-    font-size: 1rem;
+    font-size: 24px;
     cursor: pointer;
 }
 
@@ -108,9 +108,23 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    width: 600px;
     
     z-index: 3;
+    animation: image-grow 0.5s ease-in-out forwards;
+  }
+
+  @keyframes image-grow {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.5);
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
   }
 
   .heart {
