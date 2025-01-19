@@ -25,8 +25,8 @@ function animateElement(element, animationClass) {
         const newOmg = document.createElement("div");
         newOmg.textContent = "OMG!" + "!".repeat(Math.floor(Math.random() * 4));
         newOmg.classList.add("omg");
-        newOmg.style.left = `${Math.random() * 100}vw`;
-        newOmg.style.top = `${Math.random() * 100}vh`;
+        newOmg.style.left = `${Math.random() * 80 + 10}vw`;
+        newOmg.style.top = `${Math.random() * 80 + 10}vh`;
         newOmg.style.rotate = `${Math.random() * 90 - 45}deg`;
         newOmg.dataset.animation = "pop-up";
         slide.appendChild(newOmg);
@@ -81,6 +81,7 @@ const createHeart = (pos_x) => {
     heart.style.left = `${pos_x}px`;
     heart.style.animationDuration = `${Math.random() * 2 + 1}s`;
     heart.style.animationDelay = `${Math.random() * 0.2}s`;
+    heart.style.zIndex = 1;
     const heartSlide = document.querySelector('.heart-slide');
     heartSlide.appendChild(heart);
     setTimeout(() => {
