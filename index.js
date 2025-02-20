@@ -1,94 +1,82 @@
-const NUMBER_OF_OMG = 30;
 
 
-function animateElement(element, animationClass) {
-    return new Promise((resolve) => {
-      element.classList.add(animationClass);
-      element.addEventListener('animationend', () => {
-        // element.classList.remove(animationClass);
-        resolve();
-      }, { once: true }); // Ensures the event listener is removed after firing once
-    });
-  }
+let data = [{
+    title: "Tanvi's Birthday",
+    date: toISTMidnight(new Date("2001-02-21")),
+    gif: "https://media.tenor.com/4jkDInaUtxEAAAAj/mimibubu.gif"
+  }, {
+     title: "Our Anniversary",
+      date: toISTMidnight(new Date("2022-06-16")),
+      gif: "https://media1.tenor.com/m/bsSOg1KPHS0AAAAC/dudu-bubu-new-dudu.gif"
+  }, {
+    title: "Shaurya's Birthday",
+    date: toISTMidnight(new Date("2000-12-04")),
+    gif: "https://media.tenor.com/63IENW605s0AAAAj/dudu-twisting-dance.gif"
+  }];
 
-  async function animateSlide(slide) {
-    const elements = slide.querySelectorAll("[data-animation]"); // Get all animated elements
-    for (let element of elements) {
-      const animationClass = element.dataset.animation; // Read animation class from HTML
-      await animateElement(element, animationClass);
-    }
-  }
+
+  let container = document.getElementsByClassName('container')[0];
   
-  async function runOMGSlide() {
-    const slide = document.querySelector(".omg-slide");
-    for (let i = 0; i < NUMBER_OF_OMG; i++) {
-        const newOmg = document.createElement("div");
-        newOmg.textContent = "OMG!" + "!".repeat(Math.floor(Math.random() * 4));
-        newOmg.classList.add("omg");
-        newOmg.style.left = `${Math.random() * 80 + 10}vw`;
-        newOmg.style.top = `${Math.random() * 80 + 10}vh`;
-        newOmg.style.rotate = `${Math.random() * 90 - 45}deg`;
-        newOmg.dataset.animation = "pop-up";
-        slide.appendChild(newOmg);
-    }
-    const question = document.querySelector(".question-container");
-    question.style.display = "none";
-    slide.style.display = "block";
-    await animateSlide(slide);
-  }
-  
-  async function runPresentation() {
-     await runOMGSlide();
-     await runHeartRainSlide();
-  }
+ function CreateSquare(dataElement){
+    let square = document.createElement('div');
+    square.classList.add('square');
+    let squareHeader = document.createElement('div');
+    squareHeader.classList.add('square-header');
+    let squareHeaderText = document.createElement('div');
+    squareHeaderText.classList.add('square-header-text');
+    squareHeaderText.innerHTML = dataElement.title;
+    squareHeader.appendChild(squareHeaderText);
+    square.appendChild(squareHeader);
+    let squareBody = document.createElement('div');
+    squareBody.classList.add('square-body');
+    let img = document.createElement('img');
+    img.src = dataElement.gif;
+    img.alt = dataElement.title;
+    squareBody.appendChild(img);
+    square.appendChild(squareBody);
+    let squareFooter = document.createElement('div');
+    squareFooter.classList.add('square-footer');
+    squareFooter.innerHTML = getTimeToNextEvent(dataElement.date);
+    square.appendChild(squareFooter);
 
-  function addPlease() {
-    const question = document.querySelector(".question");
-    question.textContent += " Please?";
-  }
-  
-  const yesButton = document.getElementsByClassName("yes-button")[0];
-    yesButton.addEventListener("click", runPresentation);
-
-  const noButton = document.getElementsByClassName("no-button")[0];
-    noButton.addEventListener("click", addPlease);
-
-async function runHeartRainSlide() {
-    const slide = document.querySelector(".heart-slide");
-    const prevSlide = document.querySelector(".omg-slide");
-    prevSlide.style.display = "none";
-    slide.style.display = "block";
-    rainHearts();
-    await animateSlide(slide);
-}
-
-
-
-const rainHearts = () => {
     setInterval(() => {
-        for(var i = 0; i < 3; i++) {
-            createHeart(Math.random() * window.innerWidth);
-        }
-    }, 100);
+      squareFooter.innerHTML = getTimeToNextEvent(dataElement.date);
+  }, 1000);
+
+    return square;
+  }
+
+  function getTimeToNextEvent(date) {
+    // Convert input date to IST
+    const istDate = toIST(date);
+
+    let year = new Date().getFullYear();
+    istDate.setFullYear(year); // Update date to current year
+
+    if (istDate < toIST(new Date())) {
+        istDate.setFullYear(year + 1);
+    }
+
+    let diff = istDate - toIST(new Date());
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    let hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+    let minutes = Math.floor(diff / (1000 * 60)) % 60;
+    let seconds = Math.floor(diff / 1000) % 60;
+
+    return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+  }
+
+  function toIST(date) {
+    const offsetIST = 5.5 * 60; // IST offset in minutes (5 hours 30 minutes)
+    return new Date(date.getTime() + offsetIST * 60000);
+  }
+
+  function toISTMidnight(date) {
+    const istDate = toIST(date);
+    istDate.setHours(0, 0, 0, 0); // Set to midnight IST
+    return istDate;
 }
 
-
-const createHeart = (pos_x) => {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.innerHTML = "❤️";
-    heart.style.fontSize = `${Math.random() * 20 + 15}px`;
-    heart.style.left = `${pos_x}px`;
-    heart.style.animationDuration = `${Math.random() * 2 + 1}s`;
-    heart.style.animationDelay = `${Math.random() * 0.2}s`;
-    heart.style.zIndex = 1;
-    const heartSlide = document.querySelector('.heart-slide');
-    heartSlide.appendChild(heart);
-    setTimeout(() => {
-        heart.remove();
-    }, 4000);
-}
-
-
-
-  
+  data.forEach((dataElement) => {
+    container.appendChild(CreateSquare(dataElement));
+  });
